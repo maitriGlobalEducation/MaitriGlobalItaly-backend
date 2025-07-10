@@ -19,11 +19,11 @@ router.post("/signup", [
   const { name, email, password } = req.body;
 
   try {
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email }).lean();
     if (existingUser)
       return res.status(400).json({ error: "Email already exists" });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 8);
 
     const newUser = await User.create({ name, email, password: hashedPassword });
 
@@ -39,8 +39,8 @@ router.post("/signup", [
       user: { id: newUser._id, name: newUser.name, email: newUser.email },
     });
   } catch (err) {
-    console.error("Signup error:", err);
     res.status(500).json({ error: "Internal server error" });
+    console.error("Signup error:", err);
   }
 });
 
@@ -57,7 +57,7 @@ router.post("/login", [
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).lean();
     if (!user)
       return res.status(400).json({ error: "Invalid credentials" });
 

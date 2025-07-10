@@ -60,16 +60,22 @@ router.post("/", formValidation, async (req, res) => {
     });
     await newSubmission.save();
 
-    await sendConfirmationEmail({
-      to: req.body.email,
-      name: req.body.fullName,
-    });
-
-    return res
+    // Respond to client first
+    res
       .status(200)
       .json({
-        message: "Form submitted and confirmation email sent successfully.",
+        message: "Form submitted successfully. Confirmation email will be sent.",
       });
+
+    // Send email in the background
+    sendConfirmationEmail({
+      to: req.body.email,
+      name: req.body.fullName,
+    }).catch(err => {
+      // Optionally log email errors
+      console.error("Email sending error (background):", err.message);
+    });
+
   } catch (err) {
     console.error("Error in form submission:", err);
     return res

@@ -7,7 +7,6 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    unique: true,
     required: true,
     lowercase: true,
   },
@@ -16,5 +15,7 @@ const userSchema = new mongoose.Schema({
     required: true,
   }
 }, { timestamps: true });
+
+userSchema.index({ email: 1 }, { unique: true });
 
 export default mongoose.model("User", userSchema);
