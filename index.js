@@ -21,6 +21,10 @@ app.use("/api/dashboard", dashboardRoutes);
 
 const PORT = process.env.PORT || 5000;
 
+app.get("/", (_req, res) => {
+  res.send("✅ Maitri Backend API is running.");
+});
+
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
